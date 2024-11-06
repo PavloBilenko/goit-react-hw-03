@@ -1,0 +1,21 @@
+.wrapper {
+  padding: 0;
+  margin: 0;
+}
+
+.image {
+  width: 100px;
+  height: auto;
+}
+
+.name {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.text {
+  font-size: 20px;
+}
+
+
+
