@@ -1,54 +1,48 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import "modern-normalize";
-import Description from "./components/Description/Description";
-import Options from "./components/Options/Options";
-import Feedback from "./components/Feedback/Feedback";
-import Notification from "./components/Notification/Notification";
+import ContactForm from "./components/ContactForm/ContactForm";
+import ContactList from "./components/ContactList/ContactList";
+import SearchBox from "./components/SearchBox/SearchBox";
+import { nanoid } from "nanoid";
 
 function App() {
-  const [voteData, setVoteData] = useState(() => {
-    const savedData = localStorage.getItem("voteData");
-    return savedData ? JSON.parse(savedData) : { good: 0, neutral: 0, bad: 0 };
-  });
+  const [contacts, setContacts] = useState([
+    { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
+    { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
+    { id: "id-3", name: "Eden Clements", number: "645-17-79" },
+    { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
+  ]);
 
-  useEffect(() => {
-    localStorage.setItem("voteData", JSON.stringify(voteData));
-  }, [voteData]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const totalFeedback = voteData.good + voteData.neutral + voteData.bad;
-  const positivePercentage =
-    totalFeedback > 0 ? (voteData.good / totalFeedback) * 100 : 0;
-  const hasFeedback = totalFeedback > 0;
+  // Функція для фільтрації контактів за ім'ям
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleFeedbackUpdate = (type) => {
-    setVoteData((prev) => ({
-      ...prev,
-      [type]: prev[type] + 1,
-    }));
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  const handleReset = () => {
-    setVoteData({ good: 0, neutral: 0, bad: 0 });
+  const handleAddContact = (name, number) => {
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+    setContacts([...contacts, newContact]);
   };
 
   return (
     <div>
-      <Description />
-      <Options
-        totalFeedback={totalFeedback}
-        onFeedbackUpdate={handleFeedbackUpdate}
-        onReset={handleReset}
+      <h1>Phonebook</h1>
+      <ContactForm onAddContact={handleAddContact} />
+      <SearchBox
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
       />
-      {hasFeedback ? (
-        <Feedback
-          voteData={voteData}
-          total={totalFeedback}
-          positivePercentage={positivePercentage}
-        />
-      ) : (
-        <Notification message="No feedback yet" />
-      )}
+      <ContactList contacts={filteredContacts} />
     </div>
   );
 }
