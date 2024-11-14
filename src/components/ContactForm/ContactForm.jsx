@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import s from "./ContactForm.module.css";
@@ -23,7 +22,8 @@ const ContactForm = ({ onAddContact }) => {
     },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      onAddContact(values);
+      const { name, number } = values; // Деструктуризація значень
+      onAddContact(name, number); // Передача name та number окремими аргументами
       resetForm();
     },
   });
